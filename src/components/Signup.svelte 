@@ -1,0 +1,85 @@
+<!-- src/components/Signup.svelte -->
+
+<script>
+  import { createEventDispatcher } from 'svelte';
+  import { signup } from '../services/api';
+
+  const dispatch = createEventDispatcher();
+
+  let email = '';
+  let password = '';
+  let error = '';
+  let success = '';
+
+  const handleSignup = async () => {
+    error = '';
+    success = '';
+    try {
+      const data = await signup(email, password);
+      success = 'Signup successful! You can now sign in.';
+      dispatch('signupSuccess', data);
+    } catch (err) {
+      error = err.message;
+    }
+  };
+</script>
+
+<div class="auth-container">
+  <h2>Sign Up</h2>
+  {#if error}
+    <p class="error">{error}</p>
+  {/if}
+  {#if success}
+    <p class="success">{success}</p>
+  {/if}
+  <input type="email" bind:value={email} placeholder="Email" required />
+  <input type="password" bind:value={password} placeholder="Password" required />
+  <button on:click={handleSignup}>Sign Up</button>
+</div>
+
+<style>
+  .auth-container {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  h2 {
+    text-align: center;
+  }
+
+  input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+  }
+
+  button {
+    width: 100%;
+    padding: 10px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background-color: #218838;
+  }
+
+  .error {
+    color: red;
+    text-align: center;
+  }
+
+  .success {
+    color: green;
+    text-align: center;
+  }
+</style>
